@@ -1,7 +1,7 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
 import GenreFilter from "@/components/GenreFilter";
-import { MovieSection, nowShowingMovies, upcomingMovies } from "@/components/MovieSection";
+import MovieSection from "@/components/MovieSection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
@@ -11,8 +11,8 @@ const Index = () => {
       <main>
         <HeroSection />
         <GenreFilter />
-        <MovieSection title="Now Showing" movies={nowShowingMovies} />
-        <MovieSection title="Coming Soon" movies={upcomingMovies} />
+        <MovieSection title="Now Showing" isNowShowing={true} />
+        <MovieSection title="Coming Soon" isNowShowing={false} />
       </main>
       <Footer />
     </div>

@@ -1,24 +1,40 @@
-import { Search, MapPin, Menu, X } from "lucide-react";
+import { Search, MapPin, Menu, X, User, LogOut, Ticket } from "lucide-react";
 import { useState } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-md border-b border-border">
       <div className="container mx-auto px-4">
         <div className="flex items-center justify-between h-16 md:h-20">
           {/* Logo */}
-          <div className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-2">
             <div className="w-10 h-10 rounded-lg bg-primary flex items-center justify-center">
               <span className="text-primary-foreground font-bold text-xl">B</span>
             </div>
             <span className="text-xl md:text-2xl font-bold text-foreground hidden sm:block">
               Book<span className="text-primary">MyShow</span>
             </span>
-          </div>
+          </Link>
 
           {/* Search Bar - Desktop */}
           <div className="hidden md:flex flex-1 max-w-xl mx-8">
@@ -40,10 +56,37 @@ const Header = () => {
               <span className="text-sm">Mumbai</span>
             </button>
 
-            {/* Sign In Button */}
-            <Button variant="default" size="sm" className="hidden sm:flex">
-              Sign In
-            </Button>
+            {/* User Menu */}
+            {user ? (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="outline" size="sm" className="hidden sm:flex gap-2">
+                    <User className="w-4 h-4" />
+                    <span className="max-w-24 truncate">{user.email?.split("@")[0]}</span>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-48">
+                  <DropdownMenuItem onClick={() => navigate("/bookings")}>
+                    <Ticket className="w-4 h-4 mr-2" />
+                    My Bookings
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4 mr-2" />
+                    Sign Out
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            ) : (
+              <Button 
+                variant="default" 
+                size="sm" 
+                className="hidden sm:flex"
+                onClick={() => navigate("/auth")}
+              >
+                Sign In
+              </Button>
+            )}
 
             {/* Mobile Menu Toggle */}
             <button
@@ -96,7 +139,21 @@ const Header = () => {
                 <MapPin className="w-4 h-4 text-primary" />
                 <span className="text-sm">Mumbai</span>
               </button>
-              <Button variant="default" size="sm">Sign In</Button>
+              {user ? (
+                <div className="flex gap-2">
+                  <Button variant="outline" size="sm" onClick={() => navigate("/bookings")}>
+                    <Ticket className="w-4 h-4 mr-2" />
+                    Bookings
+                  </Button>
+                  <Button variant="ghost" size="sm" onClick={handleSignOut}>
+                    <LogOut className="w-4 h-4" />
+                  </Button>
+                </div>
+              ) : (
+                <Button variant="default" size="sm" onClick={() => navigate("/auth")}>
+                  Sign In
+                </Button>
+              )}
             </div>
           </div>
         </div>
