@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      booked_seats: {
+        Row: {
+          booking_id: string | null
+          created_at: string
+          id: string
+          seat_number: number
+          seat_row: string
+          showtime_id: string
+        }
+        Insert: {
+          booking_id?: string | null
+          created_at?: string
+          id?: string
+          seat_number: number
+          seat_row: string
+          showtime_id: string
+        }
+        Update: {
+          booking_id?: string | null
+          created_at?: string
+          id?: string
+          seat_number?: number
+          seat_row?: string
+          showtime_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booked_seats_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booked_seats_showtime_id_fkey"
+            columns: ["showtime_id"]
+            isOneToOne: false
+            referencedRelation: "showtimes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           booking_time: string
@@ -21,6 +63,7 @@ export type Database = {
           id: string
           movie_id: string
           seats: number
+          selected_seats: string[] | null
           show_date: string | null
           show_time: string | null
           showtime_id: string | null
@@ -36,6 +79,7 @@ export type Database = {
           id?: string
           movie_id: string
           seats?: number
+          selected_seats?: string[] | null
           show_date?: string | null
           show_time?: string | null
           showtime_id?: string | null
@@ -51,6 +95,7 @@ export type Database = {
           id?: string
           movie_id?: string
           seats?: number
+          selected_seats?: string[] | null
           show_date?: string | null
           show_time?: string | null
           showtime_id?: string | null
