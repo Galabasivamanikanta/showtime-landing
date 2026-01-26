@@ -8,9 +8,10 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBookings } from "@/hooks/useBookings";
 import { bookSeats } from "@/hooks/useBookedSeats";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Calendar, Users, CreditCard, CheckCircle, MapPin, ArrowLeft } from "lucide-react";
+import { Loader2, Calendar, Users, CheckCircle, MapPin, ArrowLeft, Ticket, Film } from "lucide-react";
 import TheaterShowtimes from "./TheaterShowtimes";
 import SeatSelector from "./SeatSelector";
+import PaymentForm from "./PaymentForm";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Movie = Tables<"movies">;
@@ -360,57 +361,56 @@ const BookingModal = ({ movie, isOpen, onClose }: BookingModalProps) => {
 
         {step === "payment" && selectedShowtime && (
           <div className="space-y-5">
-            <div className="p-4 bg-secondary rounded-lg text-center">
-              <CreditCard className="w-12 h-12 mx-auto text-primary mb-3" />
-              <h3 className="font-semibold text-foreground mb-1">Mock Payment</h3>
-              <p className="text-sm text-muted-foreground">
-                This is a simulated payment for demo purposes.
-              </p>
-            </div>
+            {/* Booking Summary Card */}
+            <div className="p-4 bg-secondary rounded-lg space-y-3">
+              <div className="flex items-center gap-3 pb-3 border-b border-border">
+                <Film className="w-8 h-8 text-primary" />
+                <div>
+                  <h3 className="font-semibold text-foreground">{movie.title}</h3>
+                  <p className="text-xs text-muted-foreground">{movie.genre?.join(", ")}</p>
+                </div>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-3 text-sm">
+                <div>
+                  <p className="text-muted-foreground">Theater</p>
+                  <p className="font-medium text-foreground">{selectedShowtime.theaterName}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Location</p>
+                  <p className="font-medium text-foreground">{selectedShowtime.theaterLocation}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Date</p>
+                  <p className="font-medium text-foreground">{formatDate(selectedShowtime.showtime.show_date || "")}</p>
+                </div>
+                <div>
+                  <p className="text-muted-foreground">Time</p>
+                  <p className="font-medium text-foreground">{formatTime(selectedShowtime.showtime.show_time || "")}</p>
+                </div>
+              </div>
 
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Movie</span>
-                <span className="text-foreground">{movie.title}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Theater</span>
-                <span className="text-foreground">{selectedShowtime.theaterName}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Date</span>
-                <span className="text-foreground">{formatDate(selectedShowtime.showtime.show_date || "")}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Time</span>
-                <span className="text-foreground">{formatTime(selectedShowtime.showtime.show_time || "")}</span>
-              </div>
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">Seats</span>
-                <span className="text-foreground">
+              <div className="flex items-center gap-2 pt-2 border-t border-border">
+                <Ticket className="w-4 h-4 text-primary" />
+                <span className="text-sm text-muted-foreground">Seats:</span>
+                <span className="font-medium text-foreground">
                   {selectedSeats.map((s) => `${s.row}${s.number}`).join(", ")}
                 </span>
               </div>
-              <div className="border-t border-border pt-3 flex justify-between">
-                <span className="font-medium text-foreground">Total</span>
-                <span className="font-bold text-primary">₹{totalAmount}</span>
+
+              <div className="flex justify-between items-center pt-3 border-t border-border">
+                <span className="font-medium text-foreground">Total Amount</span>
+                <span className="text-xl font-bold text-primary">₹{totalAmount}</span>
               </div>
             </div>
 
-            <Button 
-              onClick={handlePayment} 
-              className="w-full"
-              disabled={isProcessing}
-            >
-              {isProcessing ? (
-                <>
-                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
-                  Processing Payment...
-                </>
-              ) : (
-                `Pay ₹${totalAmount}`
-              )}
-            </Button>
+            {/* Payment Form */}
+            <PaymentForm
+              totalAmount={totalAmount}
+              onPaymentSuccess={handlePayment}
+              isProcessing={isProcessing}
+              setIsProcessing={setIsProcessing}
+            />
           </div>
         )}
 
