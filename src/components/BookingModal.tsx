@@ -8,10 +8,11 @@ import { useAuth } from "@/contexts/AuthContext";
 import { useBookings } from "@/hooks/useBookings";
 import { bookSeats } from "@/hooks/useBookedSeats";
 import { useToast } from "@/hooks/use-toast";
-import { Loader2, Calendar, Users, CheckCircle, MapPin, ArrowLeft, Ticket, Film } from "lucide-react";
+import { Loader2, Users, CheckCircle, MapPin, ArrowLeft, Ticket, Film } from "lucide-react";
 import TheaterShowtimes from "./TheaterShowtimes";
 import SeatSelector from "./SeatSelector";
 import PaymentForm from "./PaymentForm";
+import DateSelector from "./DateSelector";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Movie = Tables<"movies">;
@@ -278,18 +279,12 @@ const BookingModal = ({ movie, isOpen, onClose }: BookingModalProps) => {
               <span className="font-semibold text-foreground">{seats} {seats === 1 ? "ticket" : "tickets"}</span>
             </div>
 
-            {/* Date Selection */}
+            {/* Horizontal Date Selection */}
             <div className="space-y-2">
-              <Label className="flex items-center gap-2 text-foreground">
-                <Calendar className="w-4 h-4" />
-                Select Date
-              </Label>
-              <Input
-                type="date"
-                value={showDate || minDate}
-                onChange={(e) => setShowDate(e.target.value)}
-                min={minDate}
-                className="bg-secondary"
+              <Label className="text-foreground font-medium">Select Date</Label>
+              <DateSelector
+                selectedDate={effectiveDate}
+                onDateSelect={setShowDate}
               />
             </div>
 
