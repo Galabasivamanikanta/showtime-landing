@@ -1,7 +1,8 @@
-import { MapPin, Clock, Loader2 } from "lucide-react";
+import { useMemo } from "react";
+import { MapPin, Clock, Loader2, Users } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { useShowtimesForMovie, type TheaterWithShowtimes } from "@/hooks/useShowtimes";
-import { format, parseISO } from "date-fns";
+import { useRealtimeAvailability } from "@/hooks/useRealtimeAvailability";
 import type { Tables } from "@/integrations/supabase/types";
 
 type Showtime = Tables<"showtimes">;
@@ -21,6 +22,23 @@ const TheaterShowtimes = ({
 }: TheaterShowtimesProps) => {
   const { theatersWithShowtimes, loading, error } = useShowtimesForMovie(movieId);
 
+  // Filter showtimes by selected date
+  const filteredTheaters = useMemo(() => {
+    return theatersWithShowtimes
+      .map((t) => ({
+        ...t,
+        showtimes: t.showtimes.filter((s) => s.show_date === selectedDate),
+      }))
+      .filter((t) => t.showtimes.length > 0);
+  }, [theatersWithShowtimes, selectedDate]);
+
+  // Get all showtime IDs for real-time tracking
+  const showtimeIds = useMemo(() => {
+    return filteredTheaters.flatMap((t) => t.showtimes.map((s) => s.id));
+  }, [filteredTheaters]);
+
+  const { getAvailableSeats } = useRealtimeAvailability(showtimeIds);
+
   if (loading) {
     return (
       <div className="flex items-center justify-center py-8">
@@ -37,14 +55,6 @@ const TheaterShowtimes = ({
     );
   }
 
-  // Filter showtimes by selected date
-  const filteredTheaters = theatersWithShowtimes
-    .map((t) => ({
-      ...t,
-      showtimes: t.showtimes.filter((s) => s.show_date === selectedDate),
-    }))
-    .filter((t) => t.showtimes.length > 0);
-
   if (filteredTheaters.length === 0) {
     return (
       <div className="text-center py-8">
@@ -53,6 +63,13 @@ const TheaterShowtimes = ({
       </div>
     );
   }
+
+  const getAvailabilityColor = (available: number, total: number) => {
+    const percentage = (available / total) * 100;
+    if (percentage > 50) return "text-green-500";
+    if (percentage > 20) return "text-yellow-500";
+    return "text-red-500";
+  };
 
   return (
     <div className="space-y-4">
@@ -96,7 +113,9 @@ const TheaterShowtimes = ({
             <div className="flex flex-wrap gap-2">
               {showtimes.map((showtime) => {
                 const timeFormatted = showtime.show_time.substring(0, 5);
-                const isAvailable = (showtime.available_seats ?? 0) > 0;
+                const totalSeats = showtime.available_seats ?? 96; // 8 rows × 12 seats
+                const availableSeats = getAvailableSeats(showtime.id, totalSeats);
+                const isAvailable = availableSeats > 0;
                 
                 return (
                   <button
@@ -112,6 +131,10 @@ const TheaterShowtimes = ({
                     <span>{timeFormatted}</span>
                     <span className="block text-xs mt-0.5">
                       ₹{showtime.price}
+                    </span>
+                    <span className={`flex items-center justify-center gap-1 text-xs mt-1 ${getAvailabilityColor(availableSeats, totalSeats)}`}>
+                      <Users className="w-3 h-3" />
+                      {availableSeats} left
                     </span>
                   </button>
                 );
