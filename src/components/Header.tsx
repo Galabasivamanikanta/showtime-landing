@@ -53,7 +53,7 @@ const Header = () => {
             {/* Location */}
             <button className="hidden sm:flex items-center gap-1 text-foreground hover:text-primary transition-colors">
               <MapPin className="w-4 h-4 text-primary" />
-              <span className="text-sm">Mumbai</span>
+              <span className="text-sm">Vadodara</span>
             </button>
 
             {/* User Menu */}
@@ -137,7 +137,7 @@ const Header = () => {
             <div className="flex items-center gap-4 mt-4 pt-4 border-t border-border">
               <button className="flex items-center gap-1 text-foreground">
                 <MapPin className="w-4 h-4 text-primary" />
-                <span className="text-sm">Mumbai</span>
+                <span className="text-sm">Vadodara</span>
               </button>
               {user ? (
                 <div className="flex gap-2">
