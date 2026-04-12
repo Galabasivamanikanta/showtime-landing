@@ -4,24 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import BookingModal from "./BookingModal";
 import type { Tables } from "@/integrations/supabase/types";
 
-import moviePoster1 from "@/assets/movie-poster-1.jpg";
-import moviePoster2 from "@/assets/movie-poster-2.jpg";
-import moviePoster3 from "@/assets/movie-poster-3.jpg";
-import moviePoster4 from "@/assets/movie-poster-4.jpg";
-import moviePoster5 from "@/assets/movie-poster-5.jpg";
-import moviePoster6 from "@/assets/movie-poster-6.jpg";
-
 type Movie = Tables<"movies">;
-
-// Map poster URLs to imported images
-const posterMap: Record<string, string> = {
-  "/movie-poster-1.jpg": moviePoster1,
-  "/movie-poster-2.jpg": moviePoster2,
-  "/movie-poster-3.jpg": moviePoster3,
-  "/movie-poster-4.jpg": moviePoster4,
-  "/movie-poster-5.jpg": moviePoster5,
-  "/movie-poster-6.jpg": moviePoster6,
-};
 
 interface MovieCardProps {
   movie: Movie;
