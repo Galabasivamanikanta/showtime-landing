@@ -42,7 +42,7 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           {/* Book Now Button on Hover */}
           <div className="absolute inset-x-0 bottom-0 p-4 translate-y-full group-hover:translate-y-0 transition-transform duration-300">
             <button 
-              onClick={() => setIsBookingOpen(true)}
+              onClick={(e) => { e.stopPropagation(); setIsBookingOpen(true); }}
               className="w-full py-2 bg-primary text-primary-foreground font-medium rounded-md hover:bg-primary/90 transition-colors"
             >
               Book Now
