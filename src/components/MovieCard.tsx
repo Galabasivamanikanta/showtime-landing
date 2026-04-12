@@ -13,12 +13,13 @@ interface MovieCardProps {
 
 const MovieCard = ({ movie }: MovieCardProps) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const navigate = useNavigate();
 
   const posterImage = movie.poster_url || "/placeholder.svg";
 
   return (
     <>
-      <div className="group cursor-pointer">
+      <div className="group cursor-pointer" onClick={() => navigate(`/movie/${movie.id}`)}>
         {/* Poster */}
         <div className="relative aspect-[2/3] rounded-lg overflow-hidden mb-3 shadow-card">
           <img
