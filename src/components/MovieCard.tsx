@@ -13,7 +13,7 @@ interface MovieCardProps {
 const MovieCard = ({ movie }: MovieCardProps) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
 
-  const posterImage = movie.poster_url ? posterMap[movie.poster_url] || movie.poster_url : moviePoster1;
+  const posterImage = movie.poster_url || "/placeholder.svg";
 
   return (
     <>
