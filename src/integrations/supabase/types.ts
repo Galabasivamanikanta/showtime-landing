@@ -132,47 +132,62 @@ export type Database = {
       movies: {
         Row: {
           available_seats: number | null
+          cast_members: string[] | null
+          certificate: string | null
           created_at: string
           description: string | null
+          director: string | null
           duration_minutes: number | null
           genre: string[] | null
           id: string
           is_now_showing: boolean | null
+          language: string | null
           poster_url: string | null
           price: number | null
           rating: number | null
           release_date: string | null
           title: string
+          trailer_url: string | null
           updated_at: string
         }
         Insert: {
           available_seats?: number | null
+          cast_members?: string[] | null
+          certificate?: string | null
           created_at?: string
           description?: string | null
+          director?: string | null
           duration_minutes?: number | null
           genre?: string[] | null
           id?: string
           is_now_showing?: boolean | null
+          language?: string | null
           poster_url?: string | null
           price?: number | null
           rating?: number | null
           release_date?: string | null
           title: string
+          trailer_url?: string | null
           updated_at?: string
         }
         Update: {
           available_seats?: number | null
+          cast_members?: string[] | null
+          certificate?: string | null
           created_at?: string
           description?: string | null
+          director?: string | null
           duration_minutes?: number | null
           genre?: string[] | null
           id?: string
           is_now_showing?: boolean | null
+          language?: string | null
           poster_url?: string | null
           price?: number | null
           rating?: number | null
           release_date?: string | null
           title?: string
+          trailer_url?: string | null
           updated_at?: string
         }
         Relationships: []
