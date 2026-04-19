@@ -9,11 +9,14 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import BookingModal from "@/components/BookingModal";
 import { useMovie } from "@/hooks/useMovies";
+import { useEnrichedMovie } from "@/hooks/useEnrichedMovie";
 
 const MovieDetails = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const { movie, loading, error } = useMovie(id);
+  const releaseYear = movie?.release_date ? new Date(movie.release_date).getFullYear() : undefined;
+  const { data: enriched, loading: enrichLoading } = useEnrichedMovie(movie?.title, releaseYear);
   const [isBookingOpen, setIsBookingOpen] = useState(false);
   const [isTrailerOpen, setIsTrailerOpen] = useState(false);
 
@@ -40,11 +43,15 @@ const MovieDetails = () => {
     );
   }
 
-  const castMembers = (movie as any).cast_members || [];
-  const director = (movie as any).director || "Unknown";
-  const language = (movie as any).language || "English";
-  const certificate = (movie as any).certificate || "UA";
+  const castMembers = enriched?.cast?.length ? enriched.cast : ((movie as any).cast_members || []);
+  const director = enriched?.director || (movie as any).director || "Unknown";
+  const language = enriched?.language || (movie as any).language || "English";
+  const certificate = enriched?.rated || (movie as any).certificate || "UA";
   const trailerUrl = (movie as any).trailer_url || "";
+  const posterUrl = enriched?.poster || movie.poster_url || "/placeholder.svg";
+  const description = enriched?.plot || movie.description || "No description available.";
+  const imdbRating = enriched?.imdbRating ? parseFloat(enriched.imdbRating) : movie.rating;
+  const genres = enriched?.genres?.length ? enriched.genres : (movie.genre || []);
 
   return (
     <div className="min-h-screen bg-background">
