@@ -61,7 +61,7 @@ const MovieDetails = () => {
       <section className="relative h-[50vh] md:h-[65vh] overflow-hidden">
         <div className="absolute inset-0">
           <img
-            src={movie.poster_url || "/placeholder.svg"}
+            src={posterUrl}
             alt={movie.title}
             className="w-full h-full object-cover object-top blur-sm scale-110"
           />
@@ -74,7 +74,7 @@ const MovieDetails = () => {
             {/* Poster */}
             <div className="hidden md:block w-48 lg:w-56 flex-shrink-0 rounded-lg overflow-hidden shadow-2xl border-2 border-border/50 -mb-24 relative z-10">
               <img
-                src={movie.poster_url || "/placeholder.svg"}
+                src={posterUrl}
                 alt={movie.title}
                 className="w-full aspect-[2/3] object-cover"
               />
@@ -83,11 +83,14 @@ const MovieDetails = () => {
             {/* Info */}
             <div className="flex-1 pb-2">
               <div className="flex flex-wrap gap-2 mb-3">
-                {movie.genre?.map((g) => (
+                {genres.map((g: string) => (
                   <Badge key={g} variant="secondary" className="text-xs">
                     {g}
                   </Badge>
                 ))}
+                {enrichLoading && (
+                  <Badge variant="outline" className="text-xs animate-pulse">Loading live data…</Badge>
+                )}
               </div>
 
               <h1 className="text-3xl md:text-5xl font-bold text-foreground mb-3">
@@ -95,11 +98,11 @@ const MovieDetails = () => {
               </h1>
 
               <div className="flex flex-wrap items-center gap-3 md:gap-5 text-muted-foreground mb-5">
-                {movie.rating && (
+                {imdbRating && (
                   <div className="flex items-center gap-1.5">
                     <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
-                    <span className="text-foreground font-bold text-lg">{movie.rating}</span>
-                    <span className="text-sm">/10</span>
+                    <span className="text-foreground font-bold text-lg">{imdbRating}</span>
+                    <span className="text-sm">/10 {enriched?.imdbVotes && `(${enriched.imdbVotes} votes)`}</span>
                   </div>
                 )}
                 {movie.duration_minutes && (
