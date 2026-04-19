@@ -154,7 +154,7 @@ const MovieDetails = () => {
             <div>
               <h2 className="text-xl font-bold text-foreground mb-3">About the Movie</h2>
               <p className="text-muted-foreground leading-relaxed text-base">
-                {movie.description || "No description available."}
+                {description}
               </p>
             </div>
 
