@@ -9,7 +9,8 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const apiKey = Deno.env.get("OMDB_API_KEY");
+    const apiKey = Deno.env.get("OMDB_API_KEY")?.trim();
+    console.log("OMDB key length:", apiKey?.length);
     if (!apiKey) throw new Error("OMDB_API_KEY not configured");
 
     const { title, year, imdbId } = await req.json();
