@@ -1,5 +1,6 @@
 import { Search, MapPin, Menu, X, User, LogOut, Ticket } from "lucide-react";
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -27,7 +28,7 @@ const Header = ({ initialSearch = "" }: HeaderProps) => {
     navigate("/");
   };
 
-  const handleSearch = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const query = searchQuery.trim();
     navigate(query ? `/?q=${encodeURIComponent(query)}` : "/");
