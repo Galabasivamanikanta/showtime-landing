@@ -138,23 +138,24 @@ const Header = ({ initialSearch = "" }: HeaderProps) => {
         <div className="md:hidden bg-background border-t border-border">
           <div className="container mx-auto px-4 py-4">
             {/* Mobile Search */}
-            <div className="relative mb-4">
+            <form className="relative mb-4" onSubmit={handleSearch}>
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Search movies, events..."
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-secondary"
               />
-            </div>
+            </form>
             
             {/* Mobile Nav Links */}
             <nav className="flex flex-col gap-3">
-              <a href="#" className="text-primary font-medium py-2">Movies</a>
-              <a href="#" className="text-muted-foreground py-2">Stream</a>
-              <a href="#" className="text-muted-foreground py-2">Events</a>
-              <a href="#" className="text-muted-foreground py-2">Plays</a>
-              <a href="#" className="text-muted-foreground py-2">Sports</a>
-              <a href="#" className="text-muted-foreground py-2">Activities</a>
+              <button onClick={() => handleNavClick("movies")} className="text-primary font-medium py-2 text-left">Movies</button>
+              <button onClick={() => handleNavClick("now-showing")} className="text-muted-foreground py-2 text-left">Now Showing</button>
+              <button onClick={() => handleNavClick("coming-soon")} className="text-muted-foreground py-2 text-left">Coming Soon</button>
+              <button onClick={() => handleNavClick("genres")} className="text-muted-foreground py-2 text-left">Genres</button>
+              <button onClick={() => navigate("/bookings")} className="text-muted-foreground py-2 text-left">Bookings</button>
             </nav>
 
             {/* Mobile Actions */}
