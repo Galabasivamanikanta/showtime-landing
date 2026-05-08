@@ -5,10 +5,30 @@ import { useMovies } from "@/hooks/useMovies";
 interface MovieSectionProps {
   title: string;
   isNowShowing: boolean;
+  sectionId?: string;
+  searchQuery?: string;
 }
 
-const MovieSection = ({ title, isNowShowing }: MovieSectionProps) => {
+const MovieSection = ({ title, isNowShowing, sectionId, searchQuery = "" }: MovieSectionProps) => {
   const { movies, loading, error } = useMovies(isNowShowing);
+  const normalizedSearch = searchQuery.trim().toLowerCase();
+  const filteredMovies = normalizedSearch
+    ? movies.filter((movie) => {
+        const searchable = [
+          movie.title,
+          movie.description,
+          movie.director,
+          movie.language,
+          ...(movie.genre || []),
+          ...((movie.cast_members as string[] | null) || []),
+        ]
+          .filter(Boolean)
+          .join(" ")
+          .toLowerCase();
+
+        return searchable.includes(normalizedSearch);
+      })
+    : movies;
 
   if (loading) {
     return (
@@ -39,20 +59,24 @@ const MovieSection = ({ title, isNowShowing }: MovieSectionProps) => {
   }
 
   return (
-    <section className="py-8 md:py-12">
+    <section id={sectionId} className="py-8 md:py-12 scroll-mt-32">
       <div className="container mx-auto px-4">
         {/* Section Header */}
         <div className="flex items-center justify-between mb-6">
           <h2 className="text-2xl md:text-3xl font-bold text-foreground">{title}</h2>
-          <button className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors">
+          <button className="flex items-center gap-1 text-primary hover:text-primary/80 transition-colors" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}>
             <span className="text-sm font-medium">See All</span>
             <ChevronRight className="w-4 h-4" />
           </button>
         </div>
 
+        {normalizedSearch && filteredMovies.length === 0 && (
+          <p className="text-muted-foreground py-8">No {title.toLowerCase()} movies found for “{searchQuery}”.</p>
+        )}
+
         {/* Movie Grid */}
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 md:gap-6">
-          {movies.map((movie) => (
+          {filteredMovies.map((movie) => (
             <MovieCard key={movie.id} movie={movie} />
           ))}
         </div>
