@@ -27,6 +27,10 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           <img
             src={posterImage}
             alt={movie.title}
+            onError={handleImgError}
+            loading="lazy"
+            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+          />
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           
