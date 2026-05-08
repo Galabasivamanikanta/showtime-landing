@@ -13,9 +13,11 @@ interface MovieCardProps {
 
 const MovieCard = ({ movie }: MovieCardProps) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
 
-  const posterImage = movie.poster_url || "/placeholder.svg";
+  const posterImage = (!imgError && movie.poster_url) ? movie.poster_url : "/placeholder.svg";
+  const handleImgError = useCallback(() => setImgError(true), []);
 
   return (
     <>
