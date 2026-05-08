@@ -1,5 +1,6 @@
 import { Search, MapPin, Menu, X, User, LogOut, Ticket } from "lucide-react";
 import { useState } from "react";
+import type { FormEvent } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -12,14 +13,37 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const Header = () => {
+interface HeaderProps {
+  initialSearch?: string;
+}
+
+const Header = ({ initialSearch = "" }: HeaderProps) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState(initialSearch);
   const { user, signOut } = useAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
     await signOut();
     navigate("/");
+  };
+
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const query = searchQuery.trim();
+    navigate(query ? `/?q=${encodeURIComponent(query)}` : "/");
+    setIsMobileMenuOpen(false);
+  };
+
+  const handleNavClick = (sectionId: string) => {
+    if (window.location.pathname !== "/") {
+      navigate(`/#${sectionId}`);
+      setIsMobileMenuOpen(false);
+      return;
+    }
+
+    document.getElementById(sectionId)?.scrollIntoView({ behavior: "smooth", block: "start" });
+    setIsMobileMenuOpen(false);
   };
 
   return (
@@ -37,16 +61,18 @@ const Header = () => {
           </Link>
 
           {/* Search Bar - Desktop */}
-          <div className="hidden md:flex flex-1 max-w-xl mx-8">
+          <form className="hidden md:flex flex-1 max-w-xl mx-8" onSubmit={handleSearch}>
             <div className="relative w-full">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Search for Movies, Events, Plays, Sports and Activities"
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-secondary border-border text-foreground placeholder:text-muted-foreground focus:ring-primary"
               />
             </div>
-          </div>
+          </form>
 
           {/* Right Section */}
           <div className="flex items-center gap-4">
@@ -100,12 +126,11 @@ const Header = () => {
 
         {/* Navigation - Desktop */}
         <nav className="hidden md:flex items-center gap-8 py-3 border-t border-border/50">
-          <a href="#" className="text-primary font-medium text-sm">Movies</a>
-          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">Stream</a>
-          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">Events</a>
-          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">Plays</a>
-          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">Sports</a>
-          <a href="#" className="text-muted-foreground hover:text-foreground transition-colors text-sm">Activities</a>
+          <button onClick={() => handleNavClick("movies")} className="text-primary font-medium text-sm">Movies</button>
+          <button onClick={() => handleNavClick("now-showing")} className="text-muted-foreground hover:text-foreground transition-colors text-sm">Now Showing</button>
+          <button onClick={() => handleNavClick("coming-soon")} className="text-muted-foreground hover:text-foreground transition-colors text-sm">Coming Soon</button>
+          <button onClick={() => handleNavClick("genres")} className="text-muted-foreground hover:text-foreground transition-colors text-sm">Genres</button>
+          <button onClick={() => navigate("/bookings")} className="text-muted-foreground hover:text-foreground transition-colors text-sm">Bookings</button>
         </nav>
       </div>
 
@@ -114,23 +139,24 @@ const Header = () => {
         <div className="md:hidden bg-background border-t border-border">
           <div className="container mx-auto px-4 py-4">
             {/* Mobile Search */}
-            <div className="relative mb-4">
+            <form className="relative mb-4" onSubmit={handleSearch}>
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground w-5 h-5" />
               <Input
                 type="text"
                 placeholder="Search movies, events..."
+                value={searchQuery}
+                onChange={(event) => setSearchQuery(event.target.value)}
                 className="w-full pl-10 pr-4 py-2 bg-secondary"
               />
-            </div>
+            </form>
             
             {/* Mobile Nav Links */}
             <nav className="flex flex-col gap-3">
-              <a href="#" className="text-primary font-medium py-2">Movies</a>
-              <a href="#" className="text-muted-foreground py-2">Stream</a>
-              <a href="#" className="text-muted-foreground py-2">Events</a>
-              <a href="#" className="text-muted-foreground py-2">Plays</a>
-              <a href="#" className="text-muted-foreground py-2">Sports</a>
-              <a href="#" className="text-muted-foreground py-2">Activities</a>
+              <button onClick={() => handleNavClick("movies")} className="text-primary font-medium py-2 text-left">Movies</button>
+              <button onClick={() => handleNavClick("now-showing")} className="text-muted-foreground py-2 text-left">Now Showing</button>
+              <button onClick={() => handleNavClick("coming-soon")} className="text-muted-foreground py-2 text-left">Coming Soon</button>
+              <button onClick={() => handleNavClick("genres")} className="text-muted-foreground py-2 text-left">Genres</button>
+              <button onClick={() => navigate("/bookings")} className="text-muted-foreground py-2 text-left">Bookings</button>
             </nav>
 
             {/* Mobile Actions */}

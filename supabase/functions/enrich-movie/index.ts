@@ -1,6 +1,12 @@
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
+};
+
+const normalizeApiKey = (value: string) => {
+  const trimmed = value.trim();
+  const keyFromUrl = trimmed.match(/[?&]apikey=([^&\s]+)/i)?.[1];
+  return keyFromUrl || trimmed;
 };
 
 Deno.serve(async (req) => {
@@ -9,8 +15,7 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const apiKey = Deno.env.get("OMDB_API_KEY")?.trim();
-    console.log("OMDB key length:", apiKey?.length);
+    const apiKey = Deno.env.get("OMDB_API_KEY") ? normalizeApiKey(Deno.env.get("OMDB_API_KEY")!) : undefined;
     if (!apiKey) throw new Error("OMDB_API_KEY not configured");
 
     const { title, year, imdbId } = await req.json();

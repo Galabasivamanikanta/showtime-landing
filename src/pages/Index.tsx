@@ -3,16 +3,24 @@ import HeroSection from "@/components/HeroSection";
 import GenreFilter from "@/components/GenreFilter";
 import MovieSection from "@/components/MovieSection";
 import Footer from "@/components/Footer";
+import { useSearchParams } from "react-router-dom";
 
 const Index = () => {
+  const [searchParams] = useSearchParams();
+  const searchQuery = searchParams.get("q") || "";
+
   return (
     <div className="min-h-screen bg-background">
-      <Header />
+      <Header initialSearch={searchQuery} />
       <main>
-        <HeroSection />
-        <GenreFilter />
-        <MovieSection title="Now Showing" isNowShowing={true} />
-        <MovieSection title="Coming Soon" isNowShowing={false} />
+        <div id="movies">
+          <HeroSection />
+        </div>
+        <div id="genres" className="scroll-mt-32">
+          <GenreFilter />
+        </div>
+        <MovieSection title="Now Showing" isNowShowing={true} sectionId="now-showing" searchQuery={searchQuery} />
+        <MovieSection title="Coming Soon" isNowShowing={false} sectionId="coming-soon" searchQuery={searchQuery} />
       </main>
       <Footer />
     </div>
