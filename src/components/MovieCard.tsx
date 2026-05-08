@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { Star } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -13,9 +13,11 @@ interface MovieCardProps {
 
 const MovieCard = ({ movie }: MovieCardProps) => {
   const [isBookingOpen, setIsBookingOpen] = useState(false);
+  const [imgError, setImgError] = useState(false);
   const navigate = useNavigate();
 
-  const posterImage = movie.poster_url || "/placeholder.svg";
+  const posterImage = (!imgError && movie.poster_url) ? movie.poster_url : "/placeholder.svg";
+  const handleImgError = useCallback(() => setImgError(true), []);
 
   return (
     <>
@@ -25,6 +27,8 @@ const MovieCard = ({ movie }: MovieCardProps) => {
           <img
             src={posterImage}
             alt={movie.title}
+            onError={handleImgError}
+            loading="lazy"
             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
           />
           
