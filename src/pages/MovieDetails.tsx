@@ -268,15 +268,24 @@ const MovieDetails = () => {
         <DialogContent className="sm:max-w-3xl p-0 overflow-hidden bg-black">
           <DialogTitle className="sr-only">Trailer - {movie.title}</DialogTitle>
           <div className="aspect-video w-full">
-            {isTrailerOpen && trailerUrl && (
-              <iframe
-                src={`${trailerUrl}?autoplay=1`}
-                title={`${movie.title} Trailer`}
-                className="w-full h-full"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
-            )}
+            {isTrailerOpen && trailerUrl && (() => {
+              // Extract YouTube video ID from any URL format (watch?v=, youtu.be/, embed/)
+              const match = trailerUrl.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|watch\?v=|v\/))([\w-]{11})/);
+              const videoId = match?.[1];
+              const src = videoId
+                ? `https://www.youtube-nocookie.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`
+                : trailerUrl;
+              return (
+                <iframe
+                  src={src}
+                  title={`${movie.title} Trailer`}
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  referrerPolicy="strict-origin-when-cross-origin"
+                  allowFullScreen
+                />
+              );
+            })()}
           </div>
         </DialogContent>
       </Dialog>
