@@ -1,5 +1,6 @@
 import Header from "@/components/Header";
 import HeroSection from "@/components/HeroSection";
+import PeddiSpotlight from "@/components/PeddiSpotlight";
 import GenreFilter from "@/components/GenreFilter";
 import MovieSection from "@/components/MovieSection";
 import Footer from "@/components/Footer";
@@ -16,6 +17,7 @@ const Index = () => {
         <div id="movies">
           <HeroSection />
         </div>
+        <PeddiSpotlight />
         <div id="genres" className="scroll-mt-32">
           <GenreFilter />
         </div>
